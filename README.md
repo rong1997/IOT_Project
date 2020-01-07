@@ -34,19 +34,7 @@ Install pdfkit <br />
 `haarcascade_frontalface_default.xml` <br />
 `haarcascade_smile.xml` <br />
 
-### 步驟四: 撰寫笑容偵測並拍照的程式
-參考網址: https://www.youtube.com/watch?v=nPxmjo1VVtc <br />
-Import所需套件 <br />
-`import cv2` <br />
-`from time import sleep` <br />
-接著設定相關的xml檔案 <br />
-`face_cascade = cv2.CascadeClassifier("/home/pi/Downloads/haarcascade_frontalface_default.xml")` <br />
-`smile_cascade = cv2.CascadeClassifier("/home/pi/Downloads/haarcascade_smile.xml")` <br />
-將笑容檢測執行程式包在`smile_detect()`裡面 <br />
-偵測到笑容後使用`cv2.imwrite()`拍下照片 <br />
-拍完照後`cam.release()` `cv2.destroyAllWindows()`將鏡頭關閉並退出鏡頭畫面視窗 <br />
-
-### 步驟五: 撰寫模擬門打開(伺服馬達啟動)的程式
+### 步驟四: 撰寫模擬門打開(伺服馬達啟動)的程式
 參考網址: https://rpi.science.uoit.ca/lab/servo/ <br />
 Import所需套件 <br />
 `import RPi.GPIO as GPIO` <br />
@@ -61,6 +49,31 @@ Import所需套件 <br />
 `p.ChangeDutyCycle(7.5)` <br />
 設定轉回0度的位置 <br />
 `p.ChangeDutyCycle(2.5)` <br />
+
+### 步驟五: 撰寫笑容偵測並拍照的程式
+參考網址: https://www.youtube.com/watch?v=nPxmjo1VVtc <br />
+Import所需套件 <br />
+`import cv2` <br />
+`from time import sleep` <br />
+接著設定相關的xml檔案 <br />
+`face_cascade = cv2.CascadeClassifier("/home/pi/Downloads/haarcascade_frontalface_default.xml")` <br />
+`smile_cascade = cv2.CascadeClassifier("/home/pi/Downloads/haarcascade_smile.xml")` <br />
+將笑容檢測執行程式包在`smile_detect()`裡面 <br />
+`gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)` <br />
+`detect_face = face_cascade.detectMultiScale(gray)` <br />
+將鏡頭拍攝到的畫面投影在螢幕上 <br />
+`cv2.imshow("detect",img)` <br />
+偵測笑容前，要先偵測到臉部，相關程式包在for迴圈裡面 <br />
+`for(fx,fy,fw,fh) in detect_face:` <br />
+設定相關數值 <br />
+`face_gray = gray[fy:fy+fh,fx:fx+fw]` <br />
+`face_color = img[fy:fy+fh,fx:fx+fw]` <br />
+`detect_smile = smile_cascade.detectMultiScale(face_gray)` <br />
+偵測笑容 <br />
+`for(sx,sy,sw,sh) in detect_smile:` <br />
+偵測到笑容後使用`cv2.imwrite()`拍下照片 <br />
+拍完照後呼叫`servoOn()`把伺服馬達啟動 <br />
+`cam.release()` `cv2.destroyAllWindows()`將鏡頭關閉並退出鏡頭畫面視窗 <br />
 
 ### 步驟六: 撰寫製作臨時訪客證(html轉pdf)與QRcode的程式(安裝QRcode套件)
 參考網址1: https://stackoverflow.com/questions/16523939/how-to-write-and-save-html-file-in-python <br />
@@ -138,3 +151,7 @@ Important! Send SMTP "ehlo" command to Gmail <br />
 將信寄出去 <br />
 `smtpServer.sendmail(sender,receiver,msg.as_string())` <br />
 `smtpServer.quit()` <br />
+
+### 步驟八: 撰寫鏡頭偵測QRcode的程式
+參考網址: https://pysource.com/2019/02/28/scanning-qr-code-opencv-with-python/ <br />
+安裝
