@@ -2,7 +2,7 @@
 ## 陌生訪客登記系統
 被入口處的感測器偵測到後會開啟相機，訪客微笑三秒即自動拍照並傳到電腦，拍照後開啟門，由訪客輸入自己的相關資訊，做好的臨時訪客證與QRcode會傳到訪客輸入的信箱裡，之後訪客即可以使用QRcode掃描代替拍照入場。<br />
 
-Video: <br />
+Video: https://youtu.be/ml0Z3P2g3Io <br />
 
 所需材料:<br />
 樹莓派 * 1 <br />
@@ -58,7 +58,7 @@ Import所需套件 <br />
 接著設定相關的xml檔案 <br />
 `face_cascade = cv2.CascadeClassifier("/home/pi/Downloads/haarcascade_frontalface_default.xml")` <br />
 `smile_cascade = cv2.CascadeClassifier("/home/pi/Downloads/haarcascade_smile.xml")` <br />
-將笑容檢測執行程式包在`smile_detect()`裡面 <br />
+將笑容檢測執行程式包在`detect()`裡面 <br />
 `gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)` <br />
 `detect_face = face_cascade.detectMultiScale(gray)` <br />
 將鏡頭拍攝到的畫面投影在螢幕上 <br />
@@ -152,6 +152,16 @@ Important! Send SMTP "ehlo" command to Gmail <br />
 `smtpServer.sendmail(sender,receiver,msg.as_string())` <br />
 `smtpServer.quit()` <br />
 
-### 步驟八: 撰寫鏡頭偵測QRcode的程式
+### 步驟八: 撰寫鏡頭讀取QRcode的程式
 參考網址: https://pysource.com/2019/02/28/scanning-qr-code-opencv-with-python/ <br />
-安裝
+安裝pyzbar <br />
+`sudo pip3 install pyzbar` <br />
+Import所需套件 <br />
+`import pyzbar.pyzbar as pyzbar` <br />
+將鏡頭拍攝到的影像decode <br />
+`prv,img = cam.read()` <br />
+`decodedObjects = pyzbar.decode(img)` <br />
+decode完執行`servoOn()` <br />
+
+### 步驟九: 執行total.py
+完成IOT專案: 陌生訪客登記系統
